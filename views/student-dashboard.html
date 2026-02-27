@@ -371,7 +371,7 @@
             
             try {
                 // Fetching from the general /api/quiz/all endpoint we made earlier
-                const response = await fetch('http://localhost:3000/api/quiz/all');
+                const response = await fetch('/api/quiz/all');
                 const questions = await response.json();
                 renderQuestions(questions);
             } catch (e) {

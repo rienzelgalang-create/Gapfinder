@@ -26,35 +26,35 @@ router.get('/quiz/all', quizController.getQuestions);
 // ==========================
 // 3. ADMIN ROUTES (Approvals & Pairing)
 // ==========================
-// Full URL: http://localhost:3000/api/admin/data
+
 router.get('/admin/data', adminController.getDashboardData);
 
-// Full URL: http://localhost:3000/api/admin/approve
+
 router.post('/admin/approve', adminController.approveTeacher);
 
-// Full URL: http://localhost:3000/api/admin/assign
+
 router.post('/admin/assign', adminController.assignStudent);
 
 
 // ==========================
 // 4. EXAM ROUTES (New System)
 // ==========================
-// Full URL: http://localhost:3000/api/exam/create
+
 router.post('/exam/create', examController.createExam);
 
-// Full URL: http://localhost:3000/api/exam/all
+
 router.get('/exam/all', examController.getAllExams);
 
-// Full URL: http://localhost:3000/api/exam/add-question
+
 router.post('/exam/add-question', examController.addQuestionToExam);
 
-// Full URL: http://localhost:3000/api/exam/:examId/questions
+
 router.get('/exam/:examId/questions', examController.getExamQuestions);
 
 // ==========================
 // 5. TEACHER ROUTES
 // ==========================
-// Full URL: http://localhost:3000/api/teacher/my-students
+
 router.post('/teacher/my-students', teacherController.getMyStudents);
 
 
