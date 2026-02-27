@@ -1,0 +1,146 @@
+/* style.css - GLOBAL STYLES */
+
+:root {
+    /* Brand Colors */
+    --primary-blue: #00aeef;
+    --primary-green: #39b54a;
+    --hover-blue: #008fcc;
+    --hover-green: #2d8e3a;
+    --active-green: #8ec0ab;
+    
+    /* Neutrals */
+    --white: #ffffff;
+    --dark-bg: #0a0e0c;
+    --body-bg: #1a2521;
+    --text-gray: #e0e0e0;
+    --input-border: #eee;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--white);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* --- REUSABLE COMPONENTS --- */
+
+/* Primary Gradient Button */
+.btn {
+    padding: 18px 40px; 
+    border-radius: 50px;
+    text-decoration: none;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary { 
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+    background-size: 200% auto;
+}
+.btn-primary:hover { 
+    background-position: right center; 
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(57, 181, 74, 0.4); 
+}
+
+/* Arrow Icon */
+.arrow-icon { 
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%; 
+    width: 32px; height: 32px; 
+    display: flex; justify-content: center; align-items: center; 
+    font-size: 0.9rem; 
+}
+
+/* Form Inputs (Global consistency) */
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.3s;
+    color: #333;
+}
+.form-group input:focus { border-color: var(--primary-blue); }
+
+/* --- NAVIGATION HEADER --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    position: relative;
+    z-index: 100;
+}
+
+.logo-container { display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit; }
+.logo-image { height: 60px; width: auto; }
+.logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; line-height: 1.1; font-size: 1.4rem; }
+
+.nav-menu { display: flex; align-items: center; gap: 50px; }
+.nav-links { display: flex; list-style: none; gap: 35px; }
+.nav-links a { 
+    text-decoration: none; 
+    color: var(--white); 
+    font-weight: 600; 
+    transition: color 0.3s ease;
+}
+.nav-links a:hover { color: var(--primary-blue); }
+
+.header-right { display: flex; align-items: center; gap: 25px; }
+.login-btn {
+    background: var(--dark-bg);
+    padding: 10px 26px;
+    border-radius: 30px;
+    text-decoration: none;
+    color: var(--white);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+    transition: background 0.3s, transform 0.2s;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.login-btn:hover { background: #222; transform: translateY(-2px); }
+
+/* Mobile Menu Toggle */
+.menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 6px; }
+.menu-toggle span { width: 30px; height: 3px; background: white; transition: 0.3s; }
+
+/* Responsive Nav */
+@media (max-width: 768px) {
+    .menu-toggle { display: flex; }
+    .nav-menu {
+        position: fixed; top: 0; right: -100%;
+        background: rgba(10, 14, 12, 0.98);
+        width: 80%; height: 100vh;
+        flex-direction: column; justify-content: center;
+        padding: 40px;
+        transition: 0.4s ease-in-out;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        z-index: 99;
+    }
+    .nav-menu.active { right: 0; }
+    .nav-links { flex-direction: column; align-items: center; gap: 40px; }
+    .header-right { flex-direction: column; width: 100%; margin-top: 40px; }
+}

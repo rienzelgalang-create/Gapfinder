@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | GapFinder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- RESET & LAYOUT --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #f8f9fa; font-family: 'Poppins', sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: white;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .brand { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; color: #162622; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .brand span { color: #00aeef; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #555; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #00aeef; }
+        .btn-login { background: #00aeef; color: white !important; padding: 10px 25px; border-radius: 8px; font-weight: 600; transition: background 0.3s; }
+        .btn-login:hover { background: #0095cc; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(135deg, #162622 0%, #2C5E53 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        .hero h1 { font-family: 'Montserrat', sans-serif; font-size: 3rem; margin-bottom: 20px; }
+        .hero h1 span { color: #00aeef; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; font-weight: 300; }
+
+        /* --- MAIN CONTENT --- */
+        .container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+        
+        .section-title { font-family: 'Montserrat', sans-serif; font-size: 2rem; color: #162622; margin-bottom: 20px; text-align: center; }
+        .section-subtitle { text-align: center; color: #666; margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* --- GRID SECTIONS --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; margin-bottom: 80px; }
+        
+        .text-block h3 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; color: #00aeef; margin-bottom: 15px; }
+        .text-block p { color: #555; margin-bottom: 15px; font-size: 1.05rem; }
+        
+        .image-placeholder {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        .image-placeholder i { font-size: 5rem; color: #00aeef; margin-bottom: 20px; opacity: 0.8; }
+
+        /* --- BAYESIAN SECTION --- */
+        .bayesian-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 80px;
+            border-top: 5px solid #00aeef;
+        }
+        .bayesian-box h3 { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #162622; margin-bottom: 20px; text-align: center; }
+        .bayesian-intro { text-align: center; color: #555; max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem; }
+
+        .algo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .algo-card { text-align: center; padding: 20px; }
+        .algo-icon { width: 70px; height: 70px; background: #eafaf1; color: #2ecc71; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px; }
+        .algo-card h4 { font-family: 'Montserrat'; font-size: 1.1rem; margin-bottom: 10px; color: #333; }
+        .algo-card p { font-size: 0.9rem; color: #666; }
+
+        .algo-card:nth-child(2) .algo-icon { background: #fef9e7; color: #f1c40f; }
+        .algo-card:nth-child(3) .algo-icon { background: #e5f7fd; color: #00aeef; }
+
+        /* --- FOOTER --- */
+        footer { background: #162622; color: white; text-align: center; padding: 30px 20px; font-size: 0.9rem; }
+        footer p { opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <img src="QuERST-logo.png" style="width: 35px;" alt="GapFinder Logo" onerror="this.style.display='none'">
+            Gap<span>Finder</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html" style="color: #00aeef; font-weight: 600;">About Us</a>
+            <a href="login.html" class="btn-login">Log In</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Empowering Teachers. <br><span>Personalized for Students.</span></h1>
+        <p>GapFinder is an intelligent Learning Management System designed to assess mathematical competencies, discover learning gaps, and help educators deliver perfectly tailored lessons.</p>
+    </section>
+
+    <div class="container">
+        
+        <div class="grid-2">
+            <div class="text-block">
+                <h3>Built for Educators</h3>
+                <p>We know that every student learns differently. Traditional testing often just provides a final grade, without explaining <i>why</i> a student got the answer wrong or <i>what</i> specific fundamental skill they are missing.</p>
+                <p>GapFinder was created specifically for teachers and tutors. Our platform runs initial diagnostic assessments to map out exactly what a student currently knows. By revealing these hidden knowledge gaps, teachers can step away from a "one-size-fits-all" approach and plan highly tailored, individualized lessons that target a student's exact needs.</p>
+            </div>
+            <div class="image-placeholder">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <h4 style="font-family: 'Montserrat'; color: #333; margin-bottom: 10px;">Tailored Intervention</h4>
+                <p style="font-size: 0.9rem; color: #888;">Equipping tutors with the data they need to teach effectively.</p>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="image-placeholder" style="order: -1;">
+                <i class="fa-solid fa-shapes"></i>
+                <h4 style="font-family: 'Montserrat'; color: #333; margin-bottom: 10px;">Curriculum Mapped</h4>
+                <p style="font-size: 0.9rem; color: #888;">Structured around the standard MATATAG Math Competencies.</p>
+            </div>
+            <div class="text-block">
+                <h3>Aligned with MATATAG Curriculum</h3>
+                <p>Our platform isn't just a random assortment of math problems. The questions and learning paths inside GapFinder are meticulously mapped to specific competencies.</p>
+                <p>From basic Addition & Subtraction Fluency to Multi-Digit Multiplication and Order of Operations, our system tracks progress across the prerequisite skills necessary to build a strong mathematical foundation.</p>
+            </div>
+        </div>
+
+        <div class="bayesian-box">
+            <h3>The Science: Bayesian Knowledge Tracing</h3>
+            <p class="bayesian-intro">
+                GapFinder doesn't just grade tests; it predicts learning. We use a sophisticated AI algorithm known as <b>Bayesian Knowledge Tracing (BKT)</b> to estimate a student's true mastery of a subject.
+            </p>
+
+            <div class="algo-grid">
+                <div class="algo-card">
+                    <div class="algo-icon"><i class="fa-solid fa-eye"></i></div>
+                    <h4>1. Observe Behavior</h4>
+                    <p>When a student answers a question, the system observes the result. However, getting a question right doesn't guarantee mastery (they might have guessed), and getting it wrong doesn't guarantee ignorance (they might have slipped up).</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h4>2. Update Probabilities</h4>
+                    <p>Using a Hidden Markov Model, our BKT engine takes that observation and updates the probability of the student's <i>Latent Skill</i>. It mathematically separates actual understanding from guessing and careless mistakes.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <h4>3. Predict Mastery</h4>
+                    <p>As the student takes more quizzes, the algorithm becomes more confident. It provides the Teacher Dashboard with a highly accurate "Mastery Percentage," showing exactly when a student has truly learned a concept.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <h2 style="font-family: 'Montserrat', sans-serif; margin-bottom: 10px;">Gap<span style="color: #00aeef;">Finder</span></h2>
+        <p>A Thesis Project &bull; Intelligent Math Tutoring System</p>
+        <p style="margin-top: 15px; font-size: 0.8rem;">&copy; 2024 GapFinder. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | GapFinder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- 1. RESET & LAYOUT --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #f0f2f5; font-family: 'Poppins', sans-serif; display: flex; min-height: 100vh; }
+
+        /* --- 2. SIDEBAR --- */
+        .sidebar {
+            width: 260px; background: white; padding: 30px; display: flex; flex-direction: column; justify-content: space-between;
+            position: fixed; top: 0; left: 0; height: 100vh; box-shadow: 2px 0 10px rgba(0,0,0,0.05); z-index: 100;
+        }
+
+        .brand { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; text-decoration: none; }
+        .brand-text { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: #162622; font-weight: 700; display: flex; align-items: center; }
+        .brand-text span { color: #00aeef; }
+        
+        .nav-group { display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Nav Links */
+        .nav-link {
+            display: flex; align-items: center; gap: 15px; padding: 12px 20px; text-decoration: none; color: #666; font-weight: 500;
+            border-radius: 10px; transition: all 0.3s; cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active { background: rgba(0, 174, 239, 0.1); color: #00aeef; }
+        .nav-link i { width: 20px; text-align: center; }
+        
+        .logout-link {
+            display: flex; align-items: center; gap: 15px; padding: 12px 20px; text-decoration: none; color: #666; font-weight: 600;
+            border-top: 1px solid #eee; margin-top: 10px; padding-top: 20px; transition: color 0.3s; cursor: pointer;
+        }
+        .logout-link:hover { color: #ff4757; }
+
+        /* --- 3. MAIN CONTENT --- */
+        .main-content { margin-left: 260px; flex: 1; padding: 40px; width: calc(100% - 260px); }
+
+        .header-section { margin-bottom: 30px; }
+        .header-section h1 { font-family: 'Montserrat', sans-serif; color: #333; font-size: 1.8rem; }
+        .header-section p { color: #666; margin-top: 5px; }
+
+        /* TAB CONTENT VISIBILITY */
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARDS & TABLES */
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { font-family: 'Montserrat', sans-serif; margin-bottom: 20px; color: #333; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #888; font-size: 0.85rem; font-weight: 600; padding: 15px; border-bottom: 2px solid #f0f2f5; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 15px; border-bottom: 1px solid #f9f9f9; color: #555; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        
+        /* BUTTONS */
+        .btn-approve { background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+        .btn-approve:hover { background: #27ae60; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
+        
+        .btn-primary { background: #00aeef; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-primary:hover { background: #0095cc; }
+
+        /* FORMS */
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; font-size: 0.9rem; margin-top: 15px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-family: 'Poppins', sans-serif; color: #333; background: #fff; margin-bottom: 10px; }
+        input:focus, select:focus { border-color: #00aeef; outline: none; }
+
+        /* EXAM SPECIFIC STYLES */
+        .exam-manager-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .exam-item { padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .exam-item:hover, .exam-item.selected { border-color: #00aeef; background: rgba(0, 174, 239, 0.05); }
+        .exam-title { font-weight: 600; color: #333; }
+        .exam-meta { font-size: 0.8rem; color: #888; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div>
+            <a href="#" class="brand">
+                <img src="QuERST-logo.png" style="width: 35px;" alt="Logo">
+                <div class="brand-text">Gap<span>Finder</span></div>
+            </a>
+            
+            <div class="nav-group">
+                <div class="nav-link active" onclick="showTab('approvals')" id="link-approvals">
+                    <i class="fa-solid fa-user-check"></i> Teacher Approvals
+                </div>
+                <div class="nav-link" onclick="showTab('pairing')" id="link-pairing">
+                    <i class="fa-solid fa-people-arrows"></i> Student Pairing
+                </div>
+                <div class="nav-link" onclick="showTab('exams')" id="link-exams">
+                    <i class="fa-solid fa-file-circle-plus"></i> Manage Exams
+                </div>
+            </div>
+        </div>
+
+        <div class="logout-link" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <div class="header-section">
+            <h1 id="adminName">Admin Dashboard</h1>
+            <p>Manage users, assign tutors, and update curriculum.</p>
+        </div>
+
+        <div id="approvals" class="tab-content active">
+            <div class="card">
+                <h3><i class="fa-solid fa-clock" style="color:#ff9f43; margin-right:10px;"></i> Pending Teacher Requests</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingList">
+                        <tr><td colspan="4" style="text-align:center; padding:20px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="pairing" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                
+                <div class="card">
+                    <h3>Assign New Pair</h3>
+                    <label>Select Student</label>
+                    <select id="studentSelect"><option>Loading...</option></select>
+                    
+                    <label>Assign to Tutor</label>
+                    <select id="tutorSelect"><option>Loading...</option></select>
+
+                    <div style="margin-top: 25px;">
+                        <button class="btn-primary" onclick="assignUser()">Confirm Assignment</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Current Assignments</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Assigned Tutor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pairedList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="exams" class="tab-content">
+            
+            <div class="card">
+                <h3><i class="fa-solid fa-plus-circle"></i> Create New Exam</h3>
+                <form id="createExamForm" style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div style="flex: 2;">
+                        <label style="margin-top:0;">Exam Title</label>
+                        <input type="text" id="newExamTitle" placeholder="e.g. Unit 1: Algebra" style="margin-bottom:0;" required>
+                    </div>
+                    <div style="flex: 2;">
+                         <label style="margin-top:0;">Description</label>
+                        <input type="text" id="newExamDesc" placeholder="Optional description" style="margin-bottom:0;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="margin-top:0;">Grade</label>
+                        <select id="newExamGrade" style="margin-bottom:0;">
+                            <option value="1">Grade 1</option><option value="2">Grade 2</option>
+                            <option value="3">Grade 3</option><option value="4">Grade 4</option>
+                            <option value="5">Grade 5</option><option value="6">Grade 6</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: auto; height: 46px;">CREATE</button>
+                </form>
+            </div>
+
+            <div class="exam-manager-grid">
+                <div class="card">
+                    <h3>Select an Exam</h3>
+                    <div id="examList" style="margin-top: 15px; max-height: 500px; overflow-y: auto;">
+                        Loading exams...
+                    </div>
+                </div>
+
+                <div class="card" id="questionPanel" style="display:none;">
+                    <h3 id="selectedExamTitle" style="color: #00aeef;">Add Question</h3>
+                    <p style="font-size: 0.9rem; color:#666; margin-bottom: 20px;">Adding questions to the selected exam.</p>
+                    
+                    <form id="addQuestionForm">
+                        <input type="hidden" id="selectedExamId">
+                        
+                        <label>Question Text</label>
+                        <input type="text" id="qText" placeholder="e.g. What is 2 + 2?" required>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label>Math Topic</label>
+                                <input type="text" id="qTopic" placeholder="e.g. Addition" required>
+                            </div>
+                            <div>
+                                <label>Correct Answer</label>
+                                <select id="qCorrect">
+                                    <option value="0">Answer: Option A</option>
+                                    <option value="1">Answer: Option B</option>
+                                    <option value="2">Answer: Option C</option>
+                                    <option value="3">Answer: Option D</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label>Options</label>
+                        <input type="text" class="opt" placeholder="Option A" required>
+                        <input type="text" class="opt" placeholder="Option B" required>
+                        <input type="text" class="opt" placeholder="Option C" required>
+                        <input type="text" class="opt" placeholder="Option D" required>
+
+                        <button type="submit" class="btn-primary" style="margin-top: 20px;">SAVE QUESTION TO EXAM</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. DASHBOARD SETUP
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('adminName').innerText = `Welcome, ${user.name}!`;
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // 2. TAB NAVIGATION
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('link-' + tabId).classList.add('active');
+        }
+
+        // 3. LOAD DATA (MERGED FUNCTION)
+        async function initDashboard() {
+            await loadAdminData(); // Load Users (Approvals/Pairing)
+            await loadExams();     // Load Exams
+        }
+
+        // --- A. LOAD USER DATA ---
+        async function loadAdminData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/data');
+                const data = await response.json();
+
+                // 1. PENDING TEACHERS
+                const pendingList = document.getElementById('pendingList');
+                pendingList.innerHTML = '';
+                if (data.pendingTeachers.length === 0) {
+                    pendingList.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">No pending requests.</td></tr>`;
+                } else {
+                    data.pendingTeachers.forEach(t => {
+                        pendingList.innerHTML += `
+                            <tr>
+                                <td style="font-weight:600;">${t.name}</td>
+                                <td>${t.email}</td>
+                                <td><span style="background:#fff3cd; color:#856404; padding:5px 10px; border-radius:15px; font-size:0.8rem;">Pending</span></td>
+                                <td><button class="btn-approve" onclick="approve('${t._id}')">Approve</button></td>
+                            </tr>`;
+                    });
+                }
+
+                // 2. PAIRING DROPDOWNS
+                const studentSelect = document.getElementById('studentSelect');
+                const tutorSelect = document.getElementById('tutorSelect');
+                const pairedList = document.getElementById('pairedList');
+                
+                studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
+                tutorSelect.innerHTML = '<option value="">-- Select Tutor --</option>';
+                pairedList.innerHTML = '';
+
+                data.allStudents.forEach(s => {
+                    studentSelect.innerHTML += `<option value="${s._id}">${s.name}</option>`;
+                    const tutorName = s.assignedTutor ? `<span style="color:#2ecc71;">${s.assignedTutor.name}</span>` : `<span style="color:#e74c3c;">Unassigned</span>`;
+                    pairedList.innerHTML += `<tr><td>${s.name}</td><td>${tutorName}</td></tr>`;
+                });
+
+                data.allTutors.forEach(t => {
+                    tutorSelect.innerHTML += `<option value="${t._id}">${t.name}</option>`;
+                });
+
+            } catch (error) { console.error("Error loading user data", error); }
+        }
+
+        // --- B. LOAD EXAM DATA ---
+        async function loadExams() {
+            try {
+                const res = await fetch('http://localhost:3000/api/exam/all');
+                const exams = await res.json();
+                
+                const list = document.getElementById('examList');
+                list.innerHTML = '';
+                
+                exams.forEach(exam => {
+                    const div = document.createElement('div');
+                    div.className = 'exam-item';
+                    div.innerHTML = `
+                        <div class="exam-title">${exam.title}</div>
+                        <div class="exam-meta">Grade ${exam.gradeLevel} • ${exam.description || ''}</div>
+                    `;
+                    div.onclick = () => selectExam(exam._id, exam.title, div);
+                    list.appendChild(div);
+                });
+            } catch (e) { console.error("Error loading exams", e); }
+        }
+
+        // 4. ACTIONS
+        async function approve(userId) {
+            if(!confirm("Approve this teacher?")) return;
+            await fetch('http://localhost:3000/api/admin/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            });
+            alert("Teacher Approved!");
+            loadAdminData();
+        }
+
+        async function assignUser() {
+            const studentId = document.getElementById('studentSelect').value;
+            const tutorId = document.getElementById('tutorSelect').value;
+            if(!studentId || !tutorId) return alert("Select both!");
+            
+            await fetch('http://localhost:3000/api/admin/assign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId, tutorId })
+            });
+            alert("Paired Successfully!");
+            loadAdminData();
+        }
+
+        // 5. EXAM CREATION LOGIC
+        document.getElementById('createExamForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // STOPS THE PAGE FROM RELOADING
+            
+            const title = document.getElementById('newExamTitle').value;
+            const desc = document.getElementById('newExamDesc').value;
+            const grade = document.getElementById('newExamGrade').value;
+
+            const res = await fetch('http://localhost:3000/api/exam/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description: desc, gradeLevel: grade })
+            });
+
+            if (res.ok) {
+                alert("Exam Created Successfully!");
+                e.target.reset();
+                loadExams(); // Refresh the list without reloading page
+            } else {
+                alert("Error creating exam.");
+            }
+        });
+
+        function selectExam(id, title, element) {
+            document.querySelectorAll('.exam-item').forEach(e => e.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('questionPanel').style.display = 'block';
+            document.getElementById('selectedExamTitle').innerText = `Add Question to: ${title}`;
+            document.getElementById('selectedExamId').value = id;
+        }
+
+        document.getElementById('addQuestionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const examId = document.getElementById('selectedExamId').value;
+            const questionText = document.getElementById('qText').value;
+            const topic = document.getElementById('qTopic').value;
+            const correctAnswerIndex = document.getElementById('qCorrect').value;
+            const options = Array.from(document.querySelectorAll('.opt')).map(i => i.value);
+
+            const res = await fetch('http://localhost:3000/api/exam/add-question', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ examId, questionText, topic, correctAnswerIndex, options, gradeLevel: 1 })
+            });
+
+            if(res.ok) {
+                alert("Question Saved to Exam!");
+                e.target.reset();
+            }
+        });
+
+        // START EVERYTHING
+        initDashboard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal | GapFinder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- RESET & LAYOUT --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #f0f2f5; font-family: 'Poppins', sans-serif; display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background: white; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; position: fixed; height: 100vh; z-index: 100; box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-decoration: none; }
+        .brand-text { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: #162622; font-weight: 700; }
+        .brand-text span { color: #00aeef; }
+        
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #666; font-weight: 500; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-bottom: 5px; text-decoration: none; }
+        .nav-link:hover, .nav-link.active { background: rgba(0, 174, 239, 0.1); color: #00aeef; }
+        
+        .logout-link { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #666; font-weight: 600; cursor: pointer; border-top: 1px solid #eee; margin-top: 10px; padding-top: 20px; text-decoration: none; }
+        .logout-link:hover { color: #ff4757; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { margin-left: 260px; flex: 1; padding: 40px; width: calc(100% - 260px); }
+
+        /* --- BANNER --- */
+        .welcome-banner {
+            background: linear-gradient(135deg, #162622 0%, #2C5E53 100%);
+            border-radius: 20px; padding: 40px; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; box-shadow: 0 10px 20px rgba(22, 38, 34, 0.2);
+        }
+        .welcome-text h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; margin-bottom: 5px; color: white; }
+        .welcome-text p { opacity: 0.9; font-size: 1rem; color: #e0e0e0; }
+
+        /* --- TABS --- */
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        /* --- ROSTER GRID (My Class Tab) --- */
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .student-card {
+            background: white; border-radius: 15px; padding: 25px; text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: transform 0.2s; cursor: pointer; border: 1px solid transparent;
+        }
+        .student-card:hover { transform: translateY(-5px); border-color: #00aeef; }
+        .card-avatar { width: 80px; height: 80px; background: #00aeef; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 15px; }
+        .card-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 5px; color: #333; text-transform: capitalize; }
+        .card-email { color: #888; font-size: 0.85rem; margin-bottom: 15px; }
+        .btn-view-report { background: #eafaf1; color: #2ecc71; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+
+        /* --- REPORTS LAYOUT --- */
+        .reports-container { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+        .panel { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); height: fit-content; min-height: 500px; }
+        .panel h3 { font-family: 'Montserrat'; font-size: 1.1rem; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #333; }
+
+        /* LIST ITEMS (FIXED COLORS) */
+        .list-item { 
+            display: flex; align-items: center; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 5px;
+            color: #333 !important; /* Force Black Text */
+        }
+        .list-item:hover { background: #f8f9fa; }
+        .list-item.active { 
+            background: #f0fbfd; 
+            color: #00aeef !important; /* Blue text when active */
+            font-weight: 600;
+        }
+        
+        .list-avatar { width: 35px; height: 35px; background: #00aeef; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; margin-right: 10px; font-weight: bold; }
+
+        /* Competency Bars */
+        .skill-row { margin-bottom: 15px; }
+        .skill-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; font-weight: 500; color: #555; }
+        .bar-bg { background: #eee; height: 8px; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; width: 0%; transition: width 1s; }
+        .fill-green { background: #2ecc71; }
+        .fill-orange { background: #ff9f43; }
+        .fill-blue { background: #00aeef; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div>
+            <a href="#" class="brand">
+                <img src="QuERST-logo.png" style="width: 30px;" alt="Logo">
+                <div class="brand-text">Gap<span>Finder</span></div>
+            </a>
+            
+            <div class="nav-link active" id="nav-class" onclick="switchTab('class')">
+                <i class="fa-solid fa-users-rectangle"></i> My Class
+            </div>
+            <div class="nav-link" id="nav-reports" onclick="switchTab('reports')">
+                <i class="fa-solid fa-chart-pie"></i> Reports
+            </div>
+        </div>
+        <div class="logout-link" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1 id="teacherWelcome">Welcome, Teacher!</h1>
+                <p>Track student progress and competency gaps.</p>
+            </div>
+            <i class="fa-solid fa-chalkboard-user" style="font-size: 4rem; opacity: 0.2;"></i>
+        </div>
+
+        <div id="class" class="tab-content active">
+            <h3 style="margin-bottom: 20px; color: #333;">Class Roster</h3>
+            <div class="roster-grid" id="rosterGrid">
+                <div style="grid-column: 1/-1; text-align:center; color:#999; padding:40px;">Loading Class...</div>
+            </div>
+        </div>
+
+        <div id="reports" class="tab-content">
+            <div class="reports-container">
+                
+                <div class="panel">
+                    <h3>Select Student</h3>
+                    <div id="reportList"></div>
+                </div>
+
+                <div class="panel">
+                    <h3>Competency Report</h3>
+                    
+                    <div id="emptyState" style="text-align: center; margin-top: 100px; color: #999;">
+                        <i class="fa-solid fa-chart-simple" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>Select a student from the list to view their Mastery Graph.</p>
+                    </div>
+
+                    <div id="detailView" style="display: none;">
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:30px;">
+                            <div id="detailAvatar" style="width:60px; height:60px; background:#00aeef; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold;">A</div>
+                            <div>
+                                <h2 id="detailName" style="font-size:1.3rem; margin:0; text-transform: capitalize;">Student Name</h2>
+                                <span style="font-size:0.85rem; color:#888;">Active Learner</span>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom:15px; font-size:0.95rem; color:#333;">Bayesian Mastery Estimate</h4>
+                        
+                        <div class="skill-row">
+                            <div class="skill-header"><span>Addition & Subtraction</span> <span id="val-1">0%</span></div>
+                            <div class="bar-bg"><div id="bar-1" class="bar-fill fill-green"></div></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-header"><span>Multiplication Facts</span> <span id="val-2">0%</span></div>
+                            <div class="bar-bg"><div id="bar-2" class="bar-fill fill-orange"></div></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-header"><span>Division</span> <span id="val-3">0%</span></div>
+                            <div class="bar-bg"><div id="bar-3" class="bar-fill fill-blue"></div></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. SETUP
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(user) document.getElementById('teacherWelcome').innerText = `Welcome, ${user.name.split(' ')[0]}!`;
+
+        function logout() { localStorage.removeItem('user'); window.location.href='index.html'; }
+
+        // 2. TAB SWITCHING
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('nav-'+tabId).classList.add('active');
+        }
+
+        // 3. LOAD DATA
+        let allStudents = [];
+
+        async function init() {
+            try {
+                const res = await fetch('http://localhost:3000/api/teacher/my-students', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({teacherId: user._id})
+                });
+                allStudents = await res.json();
+                
+                renderRoster();
+                renderReportList();
+
+            } catch (e) { console.error(e); }
+        }
+
+        // 4. RENDER ROSTER (Grid View)
+        function renderRoster() {
+            const grid = document.getElementById('rosterGrid');
+            grid.innerHTML = '';
+            
+            if(allStudents.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#999; padding:40px;">No students assigned yet.</div>`;
+                return;
+            }
+
+            allStudents.forEach(s => {
+                const initials = s.name.substring(0,2).toUpperCase();
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.innerHTML = `
+                    <div class="card-avatar">${initials}</div>
+                    <div class="card-name">${s.name}</div>
+                    <div class="card-email">${s.email}</div>
+                    <button class="btn-view-report">View Report</button>
+                `;
+                // CLICK CARD -> GO TO REPORTS TAB
+                card.onclick = () => jumpToReport(s);
+                grid.appendChild(card);
+            });
+        }
+
+        // 5. RENDER REPORT LIST (Side List)
+        function renderReportList() {
+            const list = document.getElementById('reportList');
+            list.innerHTML = '';
+            
+            allStudents.forEach(s => {
+                const initials = s.name.substring(0,2).toUpperCase();
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.id = `list-item-${s._id}`; // Add ID for highlighting
+                item.innerHTML = `
+                    <div class="list-avatar">${initials}</div>
+                    <div style="text-transform: capitalize;">${s.name}</div>
+                `;
+                item.onclick = () => showDetail(s);
+                list.appendChild(item);
+            });
+        }
+
+        // 6. ACTIONS
+        function jumpToReport(student) {
+            switchTab('reports');
+            showDetail(student);
+        }
+
+        function showDetail(student) {
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('detailView').style.display = 'block';
+            
+            // Highlight selected
+            document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+            const listItem = document.getElementById(`list-item-${student._id}`);
+            if(listItem) listItem.classList.add('active');
+
+            // Fill Info
+            document.getElementById('detailName').innerText = student.name;
+            document.getElementById('detailAvatar').innerText = student.name.substring(0,2).toUpperCase();
+
+            // MOCK DATA (Randomize for effect)
+            const score1 = Math.floor(Math.random() * 40) + 60; // 60-100%
+            const score2 = Math.floor(Math.random() * 50) + 30; // 30-80%
+            const score3 = Math.floor(Math.random() * 60) + 10; // 10-70%
+
+            updateBar(1, score1);
+            updateBar(2, score2);
+            updateBar(3, score3);
+        }
+
+        function updateBar(id, val) {
+            document.getElementById(`val-${id}`).innerText = val + "%";
+            setTimeout(() => {
+                document.getElementById(`bar-${id}`).style.width = val + "%";
+            }, 100);
+        }
+
+        init();
+    </script>
+</body>
+</html>

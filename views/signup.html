@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | GapFinder Math Tutor App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .signup-container { display: flex; height: 100vh; width: 100%; }
+        
+        .form-side {
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
+            padding: 0 8%; background: var(--white); position: relative; overflow-y: auto;
+        }
+
+        /* --- NEW BACK ARROW STYLE --- */
+        .back-home {
+            position: absolute; 
+            top: 30px; 
+            left: 30px;
+            width: 40px;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none; 
+            color: #555; 
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        .back-home:hover { 
+            background: var(--primary-blue); 
+            color: white; 
+            transform: translateX(-3px); /* Subtle nudge animation */
+        }
+
+        .form-side h2 { font-family: 'Montserrat', sans-serif; font-size: 2rem; margin-bottom: 10px; color: var(--dark-bg); }
+        .form-side p { color: #666; margin-bottom: 30px; }
+
+        .role-selector { display: flex; gap: 15px; margin-bottom: 25px; }
+        .role-option {
+            flex: 1; padding: 15px; border: 2px solid #eee; border-radius: 8px;
+            text-align: center; cursor: pointer; font-weight: 600; color: #888; transition: all 0.3s;
+        }
+        .role-option.active {
+            border-color: var(--primary-blue); background: rgba(0, 174, 239, 0.05); color: var(--primary-blue);
+        }
+        
+        .name-row { display: flex; gap: 15px; }
+        .name-col { flex: 1; }
+
+        /* PASSWORD CONTAINER STYLES */
+        .password-wrapper { position: relative; width: 100%; }
+        .password-wrapper input { width: 100%; padding-right: 40px; }
+        .toggle-password {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #888; font-size: 1rem; transition: color 0.3s;
+        }
+        .toggle-password:hover { color: var(--primary-blue); }
+
+        .submit-btn { width: 100%; justify-content: center; margin-top: 10px; }
+
+        .password-requirements {
+            list-style: none; margin-top: 10px; font-size: 0.85rem; color: #888;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+        }
+        .password-requirements li { display: flex; align-items: center; gap: 6px; }
+        .password-requirements li.valid { color: var(--primary-green); font-weight: 500; }
+
+        .visual-side {
+            flex: 1;
+            background: linear-gradient(rgba(22, 38, 34, 0.85), rgba(22, 38, 34, 0.85)), 
+                        url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=2000') no-repeat center center/cover;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 60px; color: white; text-align: center;
+        }
+        .visual-side img { width: 100px; margin-bottom: 20px; }
+        .visual-side h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 900; line-height: 1.1; }
+        .visual-side h1 span { color: #a3c9b8; }
+
+        @media (max-width: 900px) {
+            .visual-side { display: none; }
+            .signup-container { height: auto; min-height: 100vh; }
+            .form-side { padding: 80px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-container">
+    <a href="index.html" class="back-home" title="Back to Home">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+
+    <div class="form-side">
+        <h2>Create Account</h2>
+        <p>Join GapFinder and start targeting learning gaps today.</p>
+
+        <form action="#" id="signupForm">
+            <div class="form-group">
+                <label>Join as a:</label>
+                <input type="hidden" name="role" id="selected-role" value="tutor">
+                
+                <div class="role-selector">
+                    <div class="role-option active" onclick="selectRole('tutor', this)">Tutor</div>
+                    <div class="role-option" onclick="selectRole('student', this)">Student</div>
+                </div>
+            </div>
+
+            <div class="name-row">
+                <div class="form-group name-col">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" placeholder="First" required>
+                </div>
+                <div class="form-group name-col">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" placeholder="Last" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="emailInput" placeholder="email@address.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="passwordInput" placeholder="Create a password" required>
+                    <i class="fa-regular fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+                
+                <ul class="password-requirements">
+                    <li id="req-length">● At least 8 characters</li>
+                    <li id="req-number">● Contains a number</li>
+                    <li id="req-special">● Special character (!@#$)</li>
+                    <li id="req-upper">● Uppercase letter</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">
+                SIGN UP NOW
+            </button>
+
+            <p style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+                Already have an account? <a href="login.html" style="color: var(--primary-blue); text-decoration: none; font-weight: 600;">Log In</a>
+            </p>
+        </form>
+    </div>
+
+    <div class="visual-side">
+        <img src="QuERST-logo.png" alt="QuERST Logo">
+        <h1>STOP GUESSING.<br><span>START TARGETING.</span></h1>
+        <p style="margin-top: 20px; font-size: 1.1rem; opacity: 0.9;">
+            The diagnostic tool for Grade 1–6 Math teachers.
+        </p>
+    </div>
+</div>
+
+<script>
+    // 1. Role Selection Logic
+    function selectRole(role, element) {
+        document.querySelectorAll('.role-option').forEach(opt => opt.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('selected-role').value = role;
+    }
+
+    // 2. TOGGLE PASSWORD VISIBILITY (THE EYE)
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('passwordInput');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    // 3. Form Submission
+    document.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+
+        const fName = document.getElementById('firstName').value;
+        const lName = document.getElementById('lastName').value;
+        const email = document.getElementById('emailInput').value;
+        const password = document.getElementById('passwordInput').value;
+        const role = document.getElementById('selected-role').value;
+
+        const fullName = fName + " " + lName;
+
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: fullName, email, password, role })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Account created! Redirecting to login...");
+                window.location.href = 'login.html';
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert("Something went wrong. Is the server running?");
+        }
+    });
+
+    // 4. Password Checker Logic
+    const requirements = {
+        length: document.getElementById('req-length'),
+        number: document.getElementById('req-number'),
+        special: document.getElementById('req-special'),
+        upper: document.getElementById('req-upper')
+    };
+
+    passwordInput.addEventListener('input', function() {
+        const val = passwordInput.value;
+        updateRequirement(requirements.length, val.length >= 8);
+        updateRequirement(requirements.number, /\d/.test(val));
+        updateRequirement(requirements.special, /[!@#$%^&*(),.?":{}|<>]/.test(val));
+        updateRequirement(requirements.upper, /[A-Z]/.test(val));
+    });
+
+    function updateRequirement(element, isValid) {
+        if (isValid) {
+            element.classList.add('valid');
+            element.innerHTML = '✔ ' + element.innerText.substring(2);
+        } else {
+            element.classList.remove('valid');
+            if(element.innerText.includes('✔')) {
+                element.innerHTML = '● ' + element.innerText.substring(2);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
