@@ -7,6 +7,7 @@ const quizController = require('../controllers/quizController');
 const adminController = require('../controllers/adminController'); // NEW
 const examController = require('../controllers/examController');   // NEW
 const teacherController = require('../controllers/teacherController'); // NEW IMPORT
+const resultsController = require('../controllers/resultsController'); // NEW IMPORT
 
 // ==========================
 // 1. AUTHENTICATION ROUTES
@@ -57,5 +58,14 @@ router.get('/exam/:examId/questions', examController.getExamQuestions);
 
 router.post('/teacher/my-students', teacherController.getMyStudents);
 
+// ==========================
+// 6. RESULTS & BAYESIAN ROUTES
+// ==========================
+
+// Saves or updates the student's score after a quiz
+router.post('/results/process', resultsController.processResult);
+
+// Gathers the student's score history and runs the Python Bayesian script
+router.get('/results/analyze', resultsController.sendResults);
 
 module.exports = router;
